@@ -28,6 +28,21 @@ Syntax highlighted code block
 
 For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
 
+## Thoughts
+
+## What Would I Do Differently?
+
+## What Was the Most Difficult Part for me?
+
+## What are My Big Take-aways from this Project?
+
+## Github Repo and Github Pages URL
+
+https://github.com/sdu-ncsu/st558-project2
+
+https://sdu-ncsu.github.io/st558-project2/
+
+
 ### Test link
 
 The analysis for [Monday is available here](linkOne.md).
