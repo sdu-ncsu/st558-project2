@@ -86,7 +86,7 @@ g0 <- ggplot(newsPopTrain, aes(x=shares))
 g0 + geom_histogram(binwidth = 0.5) + ggtitle('Histogram for Number of Shares') + ylab('Number of Shares') + xlab('Shares')
 ```
 
-![](tuesday_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](tuesday_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 ``` r
 summary(newsPopTrain$max_positive_polarity)
@@ -100,7 +100,7 @@ g1 <- ggplot(newsPopTrain, aes(x = max_positive_polarity, y = shares ))
 g1 + geom_point() + ggtitle('Scatter of Max Positive Polarity Effect') + ylab('Shares') + xlab('Max Positive Polarity')
 ```
 
-![](tuesday_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
+![](tuesday_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
 
 ``` r
 summary(newsPopTrain$timedelta)
@@ -114,7 +114,7 @@ g2 <- ggplot(newsPopTrain, aes(x = timedelta, y = shares ))
 g2 + geom_point() + ggtitle('Scatter of Article Age Effect') + ylab('Shares') + xlab('Time Delta')
 ```
 
-![](tuesday_files/figure-gfm/unnamed-chunk-5-3.png)<!-- -->
+![](tuesday_files/figure-gfm/unnamed-chunk-6-3.png)<!-- -->
 
 ``` r
 summary(newsPopTrain$num_videos)
@@ -128,7 +128,7 @@ g3 <- ggplot(newsPopTrain, aes(x = num_videos, y = shares ))
 g3 + geom_point() + ggtitle('Scatter of Videos Number Effect') + ylab('Shares') + xlab('Number of Videos')
 ```
 
-![](tuesday_files/figure-gfm/unnamed-chunk-5-4.png)<!-- -->
+![](tuesday_files/figure-gfm/unnamed-chunk-6-4.png)<!-- -->
 
 ## Modeling
 
