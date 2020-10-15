@@ -1,11 +1,13 @@
 ---
-title: "News Popularity Monday Data"
+title: "News Popularity"
 author: "Shuang Du"
 date: "10/16/2020"
 output: rmarkdown::github_document
 ---
 
 # ST558--Project 2 News Popularity
+
+The purpose of this repo is to hold the ST558 Project 2, which evaluates news popularity with a decision tree and a boosted decision tree. The analysis is split into the seven days of the week with results presented in seven links (below).
 
 ## Libraries Used
 

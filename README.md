@@ -1,9 +1,14 @@
-News Popularity Monday Data
+News Popularity
 ================
 Shuang Du
 10/16/2020
 
 # ST558–Project 2 News Popularity
+
+The purpose of this repo is to hold the ST558 Project 2, which evaluates
+news popularity with a decision tree and a boosted decision tree. The
+analysis is split into the seven days of the week with results presented
+in seven links (below).
 
 ## Libraries Used
 
