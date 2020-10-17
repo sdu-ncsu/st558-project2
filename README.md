@@ -35,7 +35,9 @@ in seven links (below).
 
 ## Links to Various Pages of Analysis
 
-Analysis for this data will be done for different days of the week.
+Analysis for this data will be done for different days of the week. Note
+Wednesday and Thursday required a slightly higher cp parameter for the
+rpart analysis.
 
   - The analysis for [Monday is available here](monday.md).
   - The analysis for [Tuesday is available here](tuesday.md).

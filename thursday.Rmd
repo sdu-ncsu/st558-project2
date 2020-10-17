@@ -115,7 +115,7 @@ rpartFit <- train(shares ~ timedelta + n_tokens_title + n_tokens_content + n_uni
                  + title_sentiment_polarity + abs_title_subjectivity + abs_title_sentiment_polarity, data = newsPopTrain,
              method = "rpart",
              trControl = trainControl(method = "cv", number = 10),
-             tuneGrid = data.frame(cp = c(.001,.01,.015,.02,.03,.04,.05))
+             tuneGrid = data.frame(cp = c(.001,.01,.015,.02,.03,.04,.05,.06,.07,.08))
              )
 rpartFit
 

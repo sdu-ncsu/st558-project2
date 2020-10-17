@@ -147,7 +147,7 @@ rpartFit <- train(shares ~ timedelta + n_tokens_title + n_tokens_content + n_uni
                  + title_sentiment_polarity + abs_title_subjectivity + abs_title_sentiment_polarity, data = newsPopTrain,
              method = "rpart",
              trControl = trainControl(method = "cv", number = 10),
-             tuneGrid = data.frame(cp = c(.001,.01,.015,.02,.03,.04,.05))
+             tuneGrid = data.frame(cp = c(.001,.01,.015,.02,.03,.04,.05,.06,.07,.08))
              )
 rpartFit
 ```
@@ -170,9 +170,12 @@ rpartFit
     ##   0.030  0.8406259  0.0016165696  0.2576059
     ##   0.040  0.8406259  0.0016165696  0.2576059
     ##   0.050  0.8121741           NaN  0.2561187
+    ##   0.060  0.8121741           NaN  0.2561187
+    ##   0.070  0.8121741           NaN  0.2561187
+    ##   0.080  0.8121741           NaN  0.2561187
     ## 
     ## RMSE was used to select the optimal model using the smallest value.
-    ## The final value used for the model was cp = 0.05.
+    ## The final value used for the model was cp = 0.08.
 
 ``` r
 # create the prediction
