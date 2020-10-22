@@ -879,8 +879,9 @@ is(are) known.
 Below is a comparison of the three methods. All have relatively high
 root mean square errors.
 
-    comparison <- data.frame("RSME" = c(resample1[[1]], resample2[[1]]), "MAE" = c(resample1[[3]], resample2[[3]]) )
-    rownames(comparison) <- c("RPART","GBM")
+    # compare results from 3 methods
+    comparison <- data.frame("RSME" = c(resample1[[1]], resample2[[1]], resample3[1]), "MAE" = c(resample1[[3]], resample2[[3]], resample3[[3]]))
+    rownames(comparison) <- c("RPART","GBM", "LM")
     kable(comparison)
 
 <table>
@@ -917,6 +918,17 @@ GBM
 </td>
 <td style="text-align:right;">
 0.2555695
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LM
+</td>
+<td style="text-align:right;">
+1.183046
+</td>
+<td style="text-align:right;">
+0.2651960
 </td>
 </tr>
 </tbody>

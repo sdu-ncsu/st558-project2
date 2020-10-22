@@ -878,6 +878,7 @@ is(are) known.
 Below is a comparison of the 3 methods. All have relatively high root
 mean square errors.
 
+    # compare results from 3 methods
     comparison <- data.frame("RSME" = c(resample1[[1]], resample2[[1]], resample3[1]), "MAE" = c(resample1[[3]], resample2[[3]], resample3[[3]]))
     rownames(comparison) <- c("RPART","GBM", "LM")
     kable(comparison)

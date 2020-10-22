@@ -1427,7 +1427,8 @@ resample3
 ## 9.608389e-01 2.425307e-08 3.122606e-01</code></pre>
 <h3 id="comparison">Comparison</h3>
 <p>Below is a comparison of the 3 methods. All have relatively high root mean square errors.</p>
-<pre><code>comparison &lt;- data.frame(&quot;RSME&quot; = c(resample1[[1]], resample2[[1]], resample3[1]), &quot;MAE&quot; = c(resample1[[3]], resample2[[3]], resample3[[3]]))
+<pre><code># compare results from 3 methods
+comparison &lt;- data.frame(&quot;RSME&quot; = c(resample1[[1]], resample2[[1]], resample3[1]), &quot;MAE&quot; = c(resample1[[3]], resample2[[3]], resample3[[3]]))
 rownames(comparison) &lt;- c(&quot;RPART&quot;,&quot;GBM&quot;, &quot;LM&quot;)
 kable(comparison)</code></pre>
 <table>
