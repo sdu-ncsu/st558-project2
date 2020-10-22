@@ -3,67 +3,64 @@ News Popularity Tuesday Data
 Shuang Du
 10/16/2020
 
-## Load Libraries
+Load Libraries
+--------------
 
-``` r
-library(readxl);
-library(tidyverse);
-library(caret);
-library(modelr);
-library(rpart);
-library(kableExtra);
-```
+    library(readxl);
+    library(tidyverse);
+    library(caret);
+    library(modelr);
+    library(rpart);
+    library(kableExtra);
 
-## Read in Data
+Read in Data
+------------
 
-``` r
-getData <- function(day) {
+    getData <- function(day) {
 
-  newsPopData <- read_csv("../../raw_data/OnlineNewsPopularity.csv")
-  
-  if (day == 'monday') {
-    newsPopData <- newsPopData %>% filter(weekday_is_monday == 1)
-  } else if(day == 'tuesday') {
-    newsPopData <- newsPopData %>% filter(weekday_is_tuesday == 1)
-  } else if(day == 'wednesday') {
-    newsPopData <- newsPopData %>% filter(weekday_is_wednesday == 1)
-  } else if(day == 'thursday') {
-    newsPopData <- newsPopData %>% filter(weekday_is_thursday == 1)
-  } else if(day == 'friday') {
-    newsPopData <- newsPopData %>% filter(weekday_is_friday == 1)
-  } else if(day == 'saturday') {
-    newsPopData <- newsPopData %>% filter(weekday_is_saturday == 1)
-  } else if(day == 'sunday') {
-    newsPopData <- newsPopData %>% filter(weekday_is_sunday == 1)
-  } else {
-    stop("Invalid date")
-  }
-  return(newsPopData)
-}
+      newsPopData <- read_csv("raw_data/OnlineNewsPopularity.csv")
+      
+      if (day == 'monday') {
+        newsPopData <- newsPopData %>% filter(weekday_is_monday == 1)
+      } else if(day == 'tuesday') {
+        newsPopData <- newsPopData %>% filter(weekday_is_tuesday == 1)
+      } else if(day == 'wednesday') {
+        newsPopData <- newsPopData %>% filter(weekday_is_wednesday == 1)
+      } else if(day == 'thursday') {
+        newsPopData <- newsPopData %>% filter(weekday_is_thursday == 1)
+      } else if(day == 'friday') {
+        newsPopData <- newsPopData %>% filter(weekday_is_friday == 1)
+      } else if(day == 'saturday') {
+        newsPopData <- newsPopData %>% filter(weekday_is_saturday == 1)
+      } else if(day == 'sunday') {
+        newsPopData <- newsPopData %>% filter(weekday_is_sunday == 1)
+      } else {
+        stop("Invalid date")
+      }
+      return(newsPopData)
+    }
 
-newsPopData <- getData(params$day)
-```
+    newsPopData <- getData(params$day)
 
-## Set Aside Training Data
+Set Aside Training Data
+-----------------------
 
-``` r
-set.seed(92)
-trainIndex <- createDataPartition(newsPopData$shares, 
-                                  p = 0.7, list = FALSE)
+    set.seed(92)
+    trainIndex <- createDataPartition(newsPopData$shares, 
+                                      p = 0.7, list = FALSE)
 
-newsPopTrain <- newsPopData[as.vector(trainIndex),];
-newsPopTest <- newsPopData[-as.vector(trainIndex),];
-```
+    newsPopTrain <- newsPopData[as.vector(trainIndex),];
+    newsPopTest <- newsPopData[-as.vector(trainIndex),];
 
-## Center and Scale
+Center and Scale
+----------------
 
-``` r
-preProcValues <- preProcess(newsPopTrain, method = c("center", "scale"))
-newsPopTrain <- predict(preProcValues, newsPopTrain) 
-newsPopTest <- predict(preProcValues, newsPopTest)
-```
+    preProcValues <- preProcess(newsPopTrain, method = c("center", "scale"))
+    newsPopTrain <- predict(preProcValues, newsPopTrain) 
+    newsPopTest <- predict(preProcValues, newsPopTest)
 
-## Summary of a Few Variables
+Summary of a Few Variables
+--------------------------
 
 The plots below show a histogram of the number of shares for the given
 day. Scatter plots on the effect of max positive polarity, article time
@@ -74,83 +71,66 @@ summary stats which show a very high maximum and a median severals
 orders of magnitude lower. This is expected for because of the “viral”
 nature of online popularity.
 
-``` r
-summary(newsPopTrain$shares)
-```
+    summary(newsPopTrain$shares)
 
     ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
     ## -0.31620 -0.22995 -0.18930  0.00000 -0.06826 44.16344
 
-``` r
-g0 <- ggplot(newsPopTrain, aes(x=shares))
-g0 + geom_histogram(binwidth = 0.5) + ggtitle('Histogram for Number of Shares') + ylab('Number of Shares') + xlab('Shares')
-```
+    g0 <- ggplot(newsPopTrain, aes(x=shares))
+    g0 + geom_histogram(binwidth = 0.5) + ggtitle('Histogram for Number of Shares') + ylab('Number of Shares') + xlab('Shares')
 
 ![](tuesday_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
-``` r
-summary(newsPopTrain$max_positive_polarity)
-```
+    summary(newsPopTrain$max_positive_polarity)
 
     ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
     ## -3.0504 -0.6206  0.1893  0.0000  0.9992  0.9992
 
-``` r
-g1 <- ggplot(newsPopTrain, aes(x = max_positive_polarity, y = shares )) 
-g1 + geom_point() + ggtitle('Scatter of Max Positive Polarity Effect') + ylab('Shares') + xlab('Max Positive Polarity')
-```
+    g1 <- ggplot(newsPopTrain, aes(x = max_positive_polarity, y = shares )) 
+    g1 + geom_point() + ggtitle('Scatter of Max Positive Polarity Effect') + ylab('Shares') + xlab('Max Positive Polarity')
 
 ![](tuesday_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
 
-``` r
-summary(newsPopTrain$timedelta)
-```
+    summary(newsPopTrain$timedelta)
 
     ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
     ## -1.60954 -0.89161 -0.07578  0.00000  0.87058  1.75168
 
-``` r
-g2 <- ggplot(newsPopTrain, aes(x = timedelta, y = shares )) 
-g2 + geom_point() + ggtitle('Scatter of Article Age Effect') + ylab('Shares') + xlab('Time Delta')
-```
+    g2 <- ggplot(newsPopTrain, aes(x = timedelta, y = shares )) 
+    g2 + geom_point() + ggtitle('Scatter of Article Age Effect') + ylab('Shares') + xlab('Time Delta')
 
 ![](tuesday_files/figure-gfm/unnamed-chunk-5-3.png)<!-- -->
 
-``` r
-summary(newsPopTrain$num_videos)
-```
+    summary(newsPopTrain$num_videos)
 
     ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
     ## -0.31683 -0.31683 -0.31683  0.00000 -0.07667 17.21525
 
-``` r
-g3 <- ggplot(newsPopTrain, aes(x = num_videos, y = shares )) 
-g3 + geom_point() + ggtitle('Scatter of Videos Number Effect') + ylab('Shares') + xlab('Number of Videos')
-```
+    g3 <- ggplot(newsPopTrain, aes(x = num_videos, y = shares )) 
+    g3 + geom_point() + ggtitle('Scatter of Videos Number Effect') + ylab('Shares') + xlab('Number of Videos')
 
 ![](tuesday_files/figure-gfm/unnamed-chunk-5-4.png)<!-- -->
 
-## Modeling
+Modeling
+--------
 
 ### Standard Tree Based Model (no ensemble)
 
 The type of model being fitted here is a decision tree. The tree splits
 are based on minimizing the residual sum of squares for each region.
 
-``` r
-rpartFit <- train(shares ~ timedelta + n_tokens_title + n_tokens_content + n_unique_tokens + n_non_stop_words + n_non_stop_unique_tokens
-                 + num_hrefs + num_self_hrefs + num_imgs + num_videos + average_token_length + num_keywords + data_channel_is_lifestyle +
-                 data_channel_is_entertainment + data_channel_is_bus + data_channel_is_socmed + data_channel_is_tech + data_channel_is_world +
-                 self_reference_min_shares + self_reference_max_shares + self_reference_avg_sharess + global_subjectivity + global_sentiment_polarity
-                 + global_rate_positive_words + global_rate_negative_words + rate_positive_words + rate_negative_words + avg_positive_polarity +
-                  min_positive_polarity + max_positive_polarity + avg_negative_polarity + min_negative_polarity + max_negative_polarity + title_subjectivity
-                 + title_sentiment_polarity + abs_title_subjectivity + abs_title_sentiment_polarity, data = newsPopTrain,
-             method = "rpart",
-             trControl = trainControl(method = "cv", number = 10),
-             tuneGrid = data.frame(cp = c(.001,.01,.015,.02,.03,.04,.05))
-             )
-rpartFit
-```
+    rpartFit <- train(shares ~ timedelta + n_tokens_title + n_tokens_content + n_unique_tokens + n_non_stop_words + n_non_stop_unique_tokens
+                     + num_hrefs + num_self_hrefs + num_imgs + num_videos + average_token_length + num_keywords + data_channel_is_lifestyle +
+                     data_channel_is_entertainment + data_channel_is_bus + data_channel_is_socmed + data_channel_is_tech + data_channel_is_world +
+                     self_reference_min_shares + self_reference_max_shares + self_reference_avg_sharess + global_subjectivity + global_sentiment_polarity
+                     + global_rate_positive_words + global_rate_negative_words + rate_positive_words + rate_negative_words + avg_positive_polarity +
+                      min_positive_polarity + max_positive_polarity + avg_negative_polarity + min_negative_polarity + max_negative_polarity + title_subjectivity
+                     + title_sentiment_polarity + abs_title_subjectivity + abs_title_sentiment_polarity, data = newsPopTrain,
+                 method = "rpart",
+                 trControl = trainControl(method = "cv", number = 10),
+                 tuneGrid = data.frame(cp = c(.001,.01,.015,.02,.03,.04,.05))
+                 )
+    rpartFit
 
     ## CART 
     ## 
@@ -174,14 +154,12 @@ rpartFit
     ## RMSE was used to select the optimal model using the smallest value.
     ## The final value used for the model was cp = 0.05.
 
-``` r
-# create the prediction
-pred1 <- predict(rpartFit, newdata = newsPopTest)
+    # create the prediction
+    pred1 <- predict(rpartFit, newdata = newsPopTest)
 
-# compare the prediction vs the actual
-resample1 <- postResample(pred1, obs = newsPopTest$shares)
-resample1
-```
+    # compare the prediction vs the actual
+    resample1 <- postResample(pred1, obs = newsPopTest$shares)
+    resample1
 
     ##      RMSE  Rsquared       MAE 
     ## 0.9605903        NA 0.3123001
@@ -192,17 +170,15 @@ A boosted tree is an ensemble method which slowly approaches the tree
 prediction which would result from the original data. In general, an
 ensemble model model will have a lower RSME than a single tree model.
 
-``` r
-gbmFit <- train(shares ~ timedelta + n_tokens_title + n_tokens_content + n_unique_tokens + n_non_stop_words + n_non_stop_unique_tokens
-                 + num_hrefs + num_self_hrefs + num_imgs + num_videos + average_token_length + num_keywords + data_channel_is_lifestyle +
-                 data_channel_is_entertainment + data_channel_is_bus + data_channel_is_socmed + data_channel_is_tech + data_channel_is_world +
-                 self_reference_min_shares + self_reference_max_shares + self_reference_avg_sharess + global_subjectivity + global_sentiment_polarity
-                 + global_rate_positive_words + global_rate_negative_words + rate_positive_words + rate_negative_words + avg_positive_polarity +
-                  min_positive_polarity + max_positive_polarity + avg_negative_polarity + min_negative_polarity + max_negative_polarity + title_subjectivity
-                 + title_sentiment_polarity + abs_title_subjectivity + abs_title_sentiment_polarity, data = newsPopTrain,
-             method = "gbm",
-             trControl = trainControl(method = "cv", number = 10))
-```
+    gbmFit <- train(shares ~ timedelta + n_tokens_title + n_tokens_content + n_unique_tokens + n_non_stop_words + n_non_stop_unique_tokens
+                     + num_hrefs + num_self_hrefs + num_imgs + num_videos + average_token_length + num_keywords + data_channel_is_lifestyle +
+                     data_channel_is_entertainment + data_channel_is_bus + data_channel_is_socmed + data_channel_is_tech + data_channel_is_world +
+                     self_reference_min_shares + self_reference_max_shares + self_reference_avg_sharess + global_subjectivity + global_sentiment_polarity
+                     + global_rate_positive_words + global_rate_negative_words + rate_positive_words + rate_negative_words + avg_positive_polarity +
+                      min_positive_polarity + max_positive_polarity + avg_negative_polarity + min_negative_polarity + max_negative_polarity + title_subjectivity
+                     + title_sentiment_polarity + abs_title_subjectivity + abs_title_sentiment_polarity, data = newsPopTrain,
+                 method = "gbm",
+                 trControl = trainControl(method = "cv", number = 10))
 
     ## Iter   TrainDeviance   ValidDeviance   StepSize   Improve
     ##      1        1.0463             nan     0.1000    0.0021
@@ -819,9 +795,7 @@ gbmFit <- train(shares ~ timedelta + n_tokens_title + n_tokens_content + n_uniqu
     ##     40        0.9692             nan     0.1000   -0.0009
     ##     50        0.9662             nan     0.1000   -0.0003
 
-``` r
-gbmFit
-```
+    gbmFit
 
     ## Stochastic Gradient Boosting 
     ## 
@@ -845,105 +819,115 @@ gbmFit
     ##   3                  150      0.8698240  0.02429420  0.3210204
     ## 
     ## Tuning parameter 'shrinkage' was held constant at a value of 0.1
-    ## Tuning parameter 'n.minobsinnode' was held constant at a value of 10
+    ## Tuning parameter 'n.minobsinnode' was held constant at a value
+    ##  of 10
     ## RMSE was used to select the optimal model using the smallest value.
     ## The final values used for the model were n.trees = 50, interaction.depth = 1, shrinkage = 0.1 and n.minobsinnode = 10.
 
-``` r
-# create the prediction
-pred2 <- predict(gbmFit, newdata = newsPopTest)
+    # create the prediction
+    pred2 <- predict(gbmFit, newdata = newsPopTest)
 
-# compare the prediction vs the actual
-resample2 <- postResample(pred2, obs = newsPopTest$shares)
-resample2
-```
+    # compare the prediction vs the actual
+    resample2 <- postResample(pred2, obs = newsPopTest$shares)
+    resample2
 
     ##       RMSE   Rsquared        MAE 
     ## 0.95542018 0.01247656 0.30161467
 
+### Linear Regression Model
+
+Linear regression is used to predict the outcome of a response variable
+for 1 to n predictors. The aim is to establish a linear relationship
+between the predictor variable(s) and response variable so we can
+predict the value of the response when only the predictor variable(s)
+is(are) known.
+
+    # train the linear model for main effects + interactions on first 3 preds
+    lmFit <- train(shares ~ timedelta*n_tokens_title*n_tokens_content, data = newsPopTrain,
+                                                                       method = "lm", preProces = c("center", "scale"),
+                                                                       trControl = trainControl(method = "cv", number = 10))
+    lmFit
+
+    ## Linear Regression 
+    ## 
+    ## 5175 samples
+    ##    3 predictor
+    ## 
+    ## Pre-processing: centered (7), scaled (7) 
+    ## Resampling: Cross-Validated (10 fold) 
+    ## Summary of sample sizes: 4658, 4658, 4657, 4657, 4657, 4657, ... 
+    ## Resampling results:
+    ## 
+    ##   RMSE       Rsquared     MAE      
+    ##   0.8818785  0.001560738  0.3044919
+    ## 
+    ## Tuning parameter 'intercept' was held constant at a value of TRUE
+
+    # create the prediction
+    pred3 <- predict(lmFit, newdata = newsPopTest)
+
+    # compare the prediction vs the actual
+    resample3 <- postResample(pred3, obs = newsPopTest$shares)
+    resample3
+
+    ##         RMSE     Rsquared          MAE 
+    ## 9.608389e-01 2.425307e-08 3.122606e-01
+
 ### Comparison
 
-Below is a comparison of the two methods. Both have relatively high root
+Below is a comparison of the 3 methods. All have relatively high root
 mean square errors.
 
-``` r
-comparison <- data.frame("RSME" = c(resample1[[1]], resample2[[1]]), "MAE" = c(resample1[[3]], resample2[[3]]) )
-rownames(comparison) <- c("RPART","GBM")
-kable(comparison)
-```
+    comparison <- data.frame("RSME" = c(resample1[[1]], resample2[[1]], resample3[1]), "MAE" = c(resample1[[3]], resample2[[3]], resample3[[3]]))
+    rownames(comparison) <- c("RPART","GBM", "LM")
+    kable(comparison)
 
 <table>
-
 <thead>
-
 <tr>
-
 <th style="text-align:left;">
-
 </th>
-
 <th style="text-align:right;">
-
 RSME
-
 </th>
-
 <th style="text-align:right;">
-
 MAE
-
 </th>
-
 </tr>
-
 </thead>
-
 <tbody>
-
 <tr>
-
 <td style="text-align:left;">
-
 RPART
-
 </td>
-
 <td style="text-align:right;">
-
 0.9605903
-
 </td>
-
 <td style="text-align:right;">
-
 0.3123001
-
 </td>
-
 </tr>
-
 <tr>
-
 <td style="text-align:left;">
-
 GBM
-
 </td>
-
 <td style="text-align:right;">
-
 0.9554202
-
 </td>
-
 <td style="text-align:right;">
-
 0.3016147
-
 </td>
-
 </tr>
-
+<tr>
+<td style="text-align:left;">
+LM
+</td>
+<td style="text-align:right;">
+0.9608389
+</td>
+<td style="text-align:right;">
+0.3122606
+</td>
+</tr>
 </tbody>
-
 </table>
