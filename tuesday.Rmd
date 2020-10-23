@@ -27,7 +27,7 @@ library(kableExtra);
 ```{r message=FALSE, warning=FALSE}
 getData <- function(day) {
 
-  newsPopData <- read_csv("../../raw_data/OnlineNewsPopularity.csv")
+  newsPopData <- read_csv("raw_data/OnlineNewsPopularity.csv")
   
   if (day == 'monday') {
     newsPopData <- newsPopData %>% filter(weekday_is_monday == 1)
@@ -159,16 +159,37 @@ resample2 <- postResample(pred2, obs = newsPopTest$shares)
 resample2
 ```
 
-### Comparison
+### Linear Regression Model
 
-Below is a comparison of the two methods. Both have relatively high root mean square errors.
+Linear regression is used to predict the outcome of a response variable for 1 to n predictors.  The aim is to establish a linear relationship between the predictor variable(s) and response variable so we can predict the value of the response when only the predictor variable(s) is(are) known.
 
-```{r}
-comparison <- data.frame("RSME" = c(resample1[[1]], resample2[[1]]), "MAE" = c(resample1[[3]], resample2[[3]]) )
-rownames(comparison) <- c("RPART","GBM")
-kable(comparison)
+```{r, lm}
+# train the linear model for main effects + interactions on first 3 preds
+lmFit <- train(shares ~ timedelta*n_tokens_title*n_tokens_content, data = newsPopTrain,
+                                                                   method = "lm", preProces = c("center", "scale"),
+                                                                   trControl = trainControl(method = "cv", number = 10))
+lmFit
 ```
 
+```{r, lm pred}
+# create the prediction
+pred3 <- predict(lmFit, newdata = newsPopTest)
+
+# compare the prediction vs the actual
+resample3 <- postResample(pred3, obs = newsPopTest$shares)
+resample3
+```
+
+### Comparison
+
+Below is a comparison of the 3 methods. All have relatively high root mean square errors.
+
+```{r}
+# compare results from 3 methods
+comparison <- data.frame("RSME" = c(resample1[[1]], resample2[[1]], resample3[1]), "MAE" = c(resample1[[3]], resample2[[3]], resample3[[3]]))
+rownames(comparison) <- c("RPART","GBM", "LM")
+kable(comparison)
+```
 
 
 
